@@ -4,14 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import {Provider} from "react-redux";
 import {store} from "./app/store.ts"
-import {BrowserRouter} from "react-router";
+import {BrowserRouter, Route, Routes} from "react-router";
 import '@ant-design/v5-patch-for-react-19';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={store}>
             <BrowserRouter>
-                <App/>
+                <Routes>
+                    <Route path={"/*"} element={<App />} />
+                </Routes>
             </BrowserRouter>
         </Provider>
     </StrictMode>,

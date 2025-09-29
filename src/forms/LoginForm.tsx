@@ -8,6 +8,8 @@ import {setUser} from "../features/userSlice.ts";
 import {IoMailOutline} from "react-icons/io5";
 import {IoLockClosedOutline} from "react-icons/io5";
 import {useState} from "react";
+import {useNavigate} from "react-router";
+
 //TODO:
 /*
 * 1. Error handling: Unauthorized, invalid form
@@ -17,11 +19,13 @@ import {useState} from "react";
 export function LoginForm() {
     const [login, {isLoading}] = useLoginMutation();
     const [error, setError] = useState()
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
 
     const onSubmit = async (data: LoginDto) => {
         const result: ApiResult<LoginResultDto> = await login(data);
+        console.log(result)
 
         if (result.data && result.data.value) {
             dispatch(setUser(result.data.value))
@@ -29,6 +33,10 @@ export function LoginForm() {
 
         if (result.error) {
             setError(error)
+        }
+        if(result.data?.succeeded){
+            console.log("success")
+            navigate("/home")
         }
     };
 

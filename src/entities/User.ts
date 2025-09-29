@@ -5,4 +5,5 @@ export type User = {
     email: string,
     token?: string | null,
     refreshToken?: string | null
+    isAuthenticated: boolean,
 }

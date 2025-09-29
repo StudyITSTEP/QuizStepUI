@@ -3,6 +3,12 @@ import {Button, Form, Input} from "antd";
 import type {RegisterDto} from "../dto/registerDto.ts";
 import type {ApiResult} from "../types/ApiResult.ts";
 
+//TODO:
+/*
+* 1. Error handling: Unauthorized, invalid form
+*
+* */
+
 export function RegisterForm() {
     const [register, {isLoading}] = useRegisterMutation();
     const onSubmit = async (data: RegisterDto) => {

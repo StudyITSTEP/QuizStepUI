@@ -37,10 +37,9 @@ export const userSlice = createSlice({
             });
             state.isAuthenticated = true
         },
-        logout: (state) => {
-            state = initialState;
-            state.isAuthenticated = false;
+        logout: () => {
             Cookies.remove("refreshToken");
+            return initialState;
         }
 
     }

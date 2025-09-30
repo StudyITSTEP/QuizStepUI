@@ -14,6 +14,7 @@ const initialState: User = {
     token: null,
     refreshToken: null,
     isAuthenticated: false,
+    roles: [],
 }
 
 export const userSlice = createSlice({
@@ -27,6 +28,9 @@ export const userSlice = createSlice({
             state.firstName = decodeToken?.firstName
             state.lastName = decodeToken?.lastName
             state.email = decodeToken?.email
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            state.roles.push(decodeToken?.roles)
             state.token = action.payload.token
             state.refreshToken = action.payload.refreshToken
             Cookies.set("refreshToken", action.payload.refreshToken!, {

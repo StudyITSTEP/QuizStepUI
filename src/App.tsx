@@ -1,12 +1,12 @@
 import './App.css'
 import {LoginPage} from "./pages/LoginPage.tsx";
 import {HomePage} from "./pages/HomePage.tsx";
-import {Route, Routes} from "react-router";
+import { Route, Routes} from "react-router";
 import {Layout} from "./components/Layout.tsx";
 import {RequireAuth} from './components/RequireAuth.tsx';
 import {useRefreshMutation} from "./api/accountApiSlice.ts";
 import {useDispatch} from "react-redux";
-import {useEffect} from "react";
+import {useLayoutEffect, useRef} from "react";
 import {useAppSelector} from "./app/hooks.ts";
 import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
@@ -20,16 +20,18 @@ function App() {
     const dispatch = useDispatch();
     const [refreshToken] = useRefreshMutation();
     const isAuth = useAppSelector(selectIsAuth);
-
-    useEffect(() => {
+    const hasRun = useRef(false);
+    useLayoutEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
         const auth = async () => {
             if (!isAuth) {
                 const token = Cookies.get("refreshToken");
                 const sub = Cookies.get("sub");
                 if (sub && token) {
                     const result: ApiResult<LoginResultDto> = await refreshToken({sub, refreshToken: token});
-                    console.log(result);
                     if (result.data?.succeeded) {
+
                         const response = result.data.value!;
                         dispatch(setUser({token: response.accessToken!, refreshToken: response.refreshToken}))
                     }
@@ -37,7 +39,7 @@ function App() {
             }
         }
         auth();
-    }, [])
+    }, [isAuth, refreshToken, dispatch])
 
     const quizzes: QuizDto[] = [
         {
@@ -103,17 +105,19 @@ function App() {
 
     return (
         <>
+            {/*{isAuth ? (<Navigate to="/login" replace/>) : <Navigate to={"/home"} />}*/}
             <QuizCatalog quizzes={quizzes} onStart={handleStart} />
 
+
             <Routes>
-                <Route path="/" element={<Layout/>}>
-                    {/*  public routes  */}
-                    <Route path="/login" element={<LoginPage/>}/>
-                    {/*  protected routes  */}
-                    <Route element={<RequireAuth/>}>
-                        <Route path="/home" element={<HomePage/>}/>
+                    <Route path="/" element={<Layout/>}>
+                        {/*  public routes  */}
+                        <Route path="/login" element={<LoginPage/>}/>
+                        {/*  protected routes  */}
+                        <Route element={<RequireAuth/>}>
+                            <Route path="/home" element={<HomePage/>}/>
+                        </Route>
                     </Route>
-                </Route>
             </Routes>
         </>
     )

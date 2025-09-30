@@ -7,7 +7,7 @@ import type {LoginResultDto} from "../dto/loginResultDto.ts";
 import {logout, setUser} from "../features/userSlice.ts";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL + "account/",
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
     //credentials: 'include',
     prepareHeaders: (headers, {getState}) => {
         const token = (getState() as RootState).user?.token;
@@ -35,7 +35,7 @@ export const baseQueryWithReauth = async (args: (string | FetchArgs), api: BaseQ
         }
         console.log(refreshToken);
         const refreshResult = await baseQuery({
-            url: "/refresh-token",
+            url: "account/refresh-token",
             method: "POST",
             body: JSON.stringify({RefreshToken: refreshToken, UserId: user.sub}),
             headers: {

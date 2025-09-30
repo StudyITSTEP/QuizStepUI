@@ -18,7 +18,7 @@ export function CustomHeader() {
     return (
         <>
             <Header>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["home"]}>
+                <Menu theme="dark" mode="horizontal" >
                     <Flex vertical={false}  justify="space-between">
                     {user.isAuthenticated &&
                         <>

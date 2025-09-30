@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Tag } from "antd";
-import type {QuizDto} from "../dto/QuizDto.tsx";
-import { QuizAccess } from "../dto/QuizAccess.tsx";
+import type {QuizDto} from "../dto/QuizDto.ts";
+import { QuizAccess } from "../dto/QuizAccess.ts";
 
 interface QuizCardProps {
     quiz: QuizDto;

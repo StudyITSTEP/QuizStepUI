@@ -12,11 +12,15 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
+// import QuizResultCard from "./components/QuizResultCard.tsx";
+import QuizRersultList from "./pages/QuizRersultPage.tsx";
+
 
 import {LaboratoryPage} from "./pages/LaboratoryPage.tsx";
 import {CategoryPage} from "./pages/CategoryPage.tsx";
 import {MyQuizzesPage} from "./pages/MyQuizzesPage.tsx";
 import {CreateQuizPage} from "./pages/CreateQuizPage.tsx";
+
 
 function App() {
     const dispatch = useDispatch();
@@ -46,6 +50,7 @@ function App() {
 
     return (
         <>
+
 
             <Routes>
                 <Route path="/" element={<Layout/>}>

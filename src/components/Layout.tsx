@@ -10,7 +10,5 @@ export const Layout = () => {
                 <Outlet/>
             </AntdLayout>
         </>
-
-
     )
 }

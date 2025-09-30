@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {Row, Col, Pagination} from 'antd';
 import QuizCard from "./QuizCard";
-import type {QuizDto} from "../dto/QuizDto.tsx";
-import {QuizAccess} from "../dto/QuizAccess.tsx";
+import type {QuizDto} from "../dto/QuizDto.ts";
+import {QuizAccess} from "../dto/QuizAccess.ts";
 
 interface QuizCatalogProps {
     quizzes: QuizDto[];

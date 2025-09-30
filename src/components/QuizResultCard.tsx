@@ -1,12 +1,12 @@
 import React from "react";
 import {Card, Progress, Typography} from 'antd'
 
-import type {QuizResultCardDto} from "../dto/QuizResultCardDto.tsx";
+import type {QuizResultDto} from "../dto/QuizResultDto.ts";
 
 const {Title, Text} = Typography;
 
 interface QuizResultCardProps {
-    result: QuizResultCardDto;
+    result: QuizResultDto;
 }
 
 const QuizResultCard: React.FC<QuizResultCardProps> = ({ result }) => {

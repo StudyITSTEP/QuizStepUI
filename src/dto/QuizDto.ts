@@ -1,4 +1,4 @@
-import {QuizAccess} from "./QuizAccess.tsx";
+import {QuizAccess} from "./QuizAccess.ts";
 
 export interface QuizDto {
     id: number;

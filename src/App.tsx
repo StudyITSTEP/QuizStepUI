@@ -12,9 +12,13 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
+// import QuizResultCard from "./components/QuizResultCard.tsx";
+import QuizRersultList from "./pages/QuizRersultPage.tsx";
 
-import QuizCatalog from "./components/QuizCatalog.tsx";
-import type {QuizDto} from "./dto/QuizDto.tsx";
+// import QuizCatalog from "./components/QuizCatalog.tsx";
+// import type {QuizDto} from "./dto/QuizDto.ts";
+// import QuizTakePage from "./pages/QuizTakePage.tsx";
+// import type { QuestionDto } from "./dto/QuestionDto.ts";
 
 function App() {
     const dispatch = useDispatch();
@@ -39,71 +43,128 @@ function App() {
         auth();
     }, [])
 
-    const quizzes: QuizDto[] = [
-        {
-            id: 1,
-            name: "Основы C#",
-            description: "Базовые концепции языка.",
-            categoryId: 101,
-            creatorId: 42,
-            quizAccess: 0,
-        },
-        {
-            id: 2,
-            name: "Java Advanced",
-            description: "Stream API, многопоточность и JVM.",
-            categoryId: 102,
-            creatorId: 99,
-            quizAccess: 0,
-        },
-        {
-            id: 3,
-            name: "JavaScript Fundamentals",
-            description: "ES6+, async/await, DOM API.",
-            categoryId: 103,
-            creatorId: 88,
-            quizAccess: 0,
-        },
-        {
-            id: 4,
-            name: "JavaScript Fundamentals",
-            description: "ES6+, async/await, DOM API.",
-            categoryId: 103,
-            creatorId: 88,
-            quizAccess: 1,
-        },{
-            id: 5,
-            name: "JavaScript Fundamentals",
-            description: "ES6+, async/await, DOM API.",
-            categoryId: 103,
-            creatorId: 88,
-            quizAccess: 0,
-        },
-        {
-            id: 6,
-            name: "JavaScript Fundamentals",
-            description: "ES6+, async/await, DOM API.",
-            categoryId: 103,
-            creatorId: 88,
-            quizAccess: 1,
-        },
-        {
-            id: 7,
-            name: "JavaScript Fundamentals",
-            description: "ES6+, async/await, DOM API.",
-            categoryId: 103,
-            creatorId: 88,
-            quizAccess: 1,
-        },
-    ];
+    // const quizzes: QuizDto[] = [
+    //     {
+    //         id: 1,
+    //         name: "Основы C#",
+    //         description: "Базовые концепции языка.",
+    //         categoryId: 101,
+    //         creatorId: 42,
+    //         quizAccess: 0,
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Java Advanced",
+    //         description: "Stream API, многопоточность и JVM.",
+    //         categoryId: 102,
+    //         creatorId: 99,
+    //         quizAccess: 0,
+    //     },
+    //     {
+    //         id: 3,
+    //         name: "JavaScript Fundamentals",
+    //         description: "ES6+, async/await, DOM API.",
+    //         categoryId: 103,
+    //         creatorId: 88,
+    //         quizAccess: 0,
+    //     },
+    //     {
+    //         id: 4,
+    //         name: "JavaScript Fundamentals",
+    //         description: "ES6+, async/await, DOM API.",
+    //         categoryId: 103,
+    //         creatorId: 88,
+    //         quizAccess: 1,
+    //     },{
+    //         id: 5,
+    //         name: "JavaScript Fundamentals",
+    //         description: "ES6+, async/await, DOM API.",
+    //         categoryId: 103,
+    //         creatorId: 88,
+    //         quizAccess: 0,
+    //     },
+    //     {
+    //         id: 6,
+    //         name: "JavaScript Fundamentals",
+    //         description: "ES6+, async/await, DOM API.",
+    //         categoryId: 103,
+    //         creatorId: 88,
+    //         quizAccess: 1,
+    //     },
+    //     {
+    //         id: 7,
+    //         name: "JavaScript Fundamentals",
+    //         description: "ES6+, async/await, DOM API.",
+    //         categoryId: 103,
+    //         creatorId: 88,
+    //         quizAccess: 1,
+    //     },
+    // ];
 
-    const handleStart = (quizId: number) => {
-        alert(`Стартуем тест с id=${quizId}`);
-    };
+    // const handleStart = (quizId: number) => {
+    //     alert(`Стартуем тест с id=${quizId}`);
+    // };
+
+    // const mockQuestions: QuestionDto[] = [
+    //     {
+    //         id: 1,
+    //         text: "Что делает оператор '==' в C#?",
+    //         quizId: 1,
+    //         answers: [
+    //             { id: 101, text: "Сравнивает ссылки на объекты" },
+    //             { id: 102, text: "Сравнивает значения" },
+    //             { id: 103, text: "Присваивает значение" },
+    //         ],
+    //     },
+    //     {
+    //         id: 2,
+    //         text: "Что такое LINQ?",
+    //         quizId: 1,
+    //         answers: [
+    //             { id: 201, text: "Язык запросов к БД" },
+    //             { id: 202, text: "Система сборки мусора" },
+    //             { id: 203, text: "Библиотека для работы с потоками" },
+    //         ],
+    //     },
+    //     {
+    //         id: 3,
+    //         text: "Что такое LINQ?",
+    //         quizId: 1,
+    //         answers: [
+    //             { id: 301, text: "Язык запросов к БД" },
+    //             { id: 302, text: "Система сборки мусора" },
+    //             { id: 303, text: "Библиотека для работы с потоками" },
+    //         ],
+    //     },
+    //     {
+    //         id: 4,
+    //         text: "Что такое LINQ?",
+    //         quizId: 1,
+    //         answers: [
+    //             { id: 401, text: "Язык запросов к БД" },
+    //             { id: 402, text: "Система сборки мусора" },
+    //             { id: 403, text: "Библиотека для работы с потоками" },
+    //         ],
+    //     },
+    // ];
+    //
+    // const handleSubmit = (answers: Record<number, number>) => {
+    //     console.log("Выбранные ответы:", answers);
+    //     alert("Тест завершён. Ответы отправлены в консоль.");
+    // };
+
 
     return (
         <>
-            <QuizCatalog quizzes={quizzes} onStart={handleStart} />
+            {/*<QuizCatalog quizzes={quizzes} onStart={handleStart} />*/}
+
+            {/*<QuizTakePage*/}
+            {/*    quizName="Основы C#"*/}
+            {/*    questions={mockQuestions}*/}
+            {/*    onSubmit={handleSubmit}*/}
+            {/*/>*/}
+
+            <QuizRersultList/>
 
             <Routes>
                 <Route path="/" element={<Layout/>}>

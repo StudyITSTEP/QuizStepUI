@@ -10,21 +10,21 @@ export const accountApi = createApi({
     endpoints: builder => ({
         login: builder.mutation({
             query: (dto: LoginDto) => ({
-                url: "login",
+                url: "account/login",
                 method: "POST",
                 body: dto
             })
         }),
         register: builder.mutation({
             query: (dto: RegisterDto) => ({
-                url: "register",
+                url: "account/register",
                 method: "POST",
                 body: dto
             })
         }),
         refresh: builder.mutation({
             query: ({sub, refreshToken}: { sub: string, refreshToken: string }) => ({
-                url: "refresh-token",
+                url: "account/refresh-token",
                 method: "POST",
                 body: {userId: sub, refreshToken}
             })

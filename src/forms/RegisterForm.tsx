@@ -14,7 +14,8 @@ export function RegisterForm() {
     const onSubmit = async (data: RegisterDto) => {
         const result: ApiResult<unknown> = await register(data)
         console.log(result)
-        if (result.data?.success){
+        if (result.data?.succeeded){
+
         }
     }
     return (

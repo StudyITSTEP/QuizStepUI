@@ -12,8 +12,9 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
+import AdminQuizMonitorPage from "./pages/AdminQuizMonitorPage.tsx";
 // import QuizResultCard from "./components/QuizResultCard.tsx";
-import QuizRersultList from "./pages/QuizRersultPage.tsx";
+// import QuizRersultList from "./components/QuizRersultList.tsx";
 
 // import QuizCatalog from "./components/QuizCatalog.tsx";
 // import type {QuizDto} from "./dto/QuizDto.ts";
@@ -153,7 +154,6 @@ function App() {
     //     alert("Тест завершён. Ответы отправлены в консоль.");
     // };
 
-
     return (
         <>
             {/*<QuizCatalog quizzes={quizzes} onStart={handleStart} />*/}
@@ -164,7 +164,9 @@ function App() {
             {/*    onSubmit={handleSubmit}*/}
             {/*/>*/}
 
-            <QuizRersultList/>
+            {/*<QuizRersultList/>*/}
+
+                <AdminQuizMonitorPage/>
 
             <Routes>
                 <Route path="/" element={<Layout/>}>

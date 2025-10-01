@@ -12,10 +12,11 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
-import AdminQuizMonitorPage from "./pages/AdminQuizMonitorPage.tsx";
-// import QuizResultCard from "./components/QuizResultCard.tsx";
-// import QuizRersultList from "./components/QuizRersultList.tsx";
 
+// import AdminQuizMonitor from "./components/AdminQuizMonitor.tsx";
+// import QuizResultCard from "./components/QuizResultCard.tsx";
+// import AdminPanel from "./components/AdminPanel.tsx";
+// import QuizRersultList from "./components/QuizRersultList.tsx";
 
 import {LaboratoryPage} from "./pages/LaboratoryPage.tsx";
 import {CategoryPage} from "./pages/CategoryPage.tsx";
@@ -50,17 +51,6 @@ function App() {
 
     return (
         <>
-
-            {/*<QuizTakePage*/}
-            {/*    quizName="Основы C#"*/}
-            {/*    questions={mockQuestions}*/}
-            {/*    onSubmit={handleSubmit}*/}
-            {/*/>*/}
-
-            {/*<QuizRersultList/>*/}
-
-            <AdminQuizMonitorPage/>
-
             <Routes>
                 <Route path="/" element={<Layout/>}>
                     {/* public routes */}

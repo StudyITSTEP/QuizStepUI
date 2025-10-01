@@ -1,7 +1,7 @@
 import React from "react";
 import { List } from "antd";
-import ParticipantCard from "../components/ParticipantCard";
-import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto";
+import ParticipantCard from "./ParticipantCard.tsx";
+import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto.ts";
 
 const mockParticipants: QuizParticipantProgressDto[] = [
     { userId: "1", userName: "1", currentQuestion: 3, totalQuestions: 10 },
@@ -9,7 +9,7 @@ const mockParticipants: QuizParticipantProgressDto[] = [
     { userId: "3", userName: "3", currentQuestion: 10, totalQuestions: 10 },
 ];
 
-const AdminQuizMonitorPage: React.FC = () => {
+const AdminQuizMonitor: React.FC = () => {
 
     // const { data: participants, isLoading, error } = useGetQuizParticipantsQuery();
 
@@ -34,4 +34,4 @@ const AdminQuizMonitorPage: React.FC = () => {
     );
 };
 
-export default AdminQuizMonitorPage;
+export default AdminQuizMonitor;

@@ -1,5 +1,5 @@
 import { List } from "antd";
-import { useGetUserResultsQuery } from "../api/quizApi.ts";
+import { useGetUserResultsQuery } from "../api/quizResultApiSlice.ts";
 import { useAppSelector } from "../app/hooks.ts";
 import { selectUser } from "../features/userSlice.ts";
 import QuizResultCard from "./QuizResultCard.tsx";

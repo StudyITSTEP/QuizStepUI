@@ -5,6 +5,6 @@ export interface QuizDto {
     name: string;
     description?: string;
     categoryId: number;
-    creatorId: number;
+    creatorId: string;
     quizAccess: QuizAccess;
 }

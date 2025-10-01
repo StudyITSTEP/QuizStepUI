@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Button, Tag } from "antd";
 import type {QuizDto} from "../dto/QuizDto.ts";
 import { QuizAccess } from "../dto/QuizAccess.ts";
+import {Link} from "react-router";
 
 interface QuizCardProps {
     quiz: QuizDto;
@@ -26,7 +27,9 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart }) => {
                 onClick={() => onStart(quiz.id)}
                 disabled={quiz.quizAccess === QuizAccess.Private}
             >
-                Начать
+                <Link to={`/quiz/${quiz.id}`}>
+                    Details
+                </Link>
             </Button>
         </Card>
     );

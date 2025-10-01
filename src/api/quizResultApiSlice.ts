@@ -1,9 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithReauth} from "./baseQuery.ts";
-import type {QuizResultDto} from "../dto/QuizResultDto.ts";
+import type { QuizResultDto } from "../dto/QuizResultDto.ts";
 
-export const quizApi = createApi({
-    reducerPath: "quizApi",
+export const quizResultApiSlice = createApi({
+    reducerPath: "quizResultApiSlice",
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
         getUserResults: builder.query<QuizResultDto[], string>({
@@ -15,4 +15,4 @@ export const quizApi = createApi({
     }),
 });
 
-export const { useGetUserResultsQuery } = quizApi;
+export const { useGetUserResultsQuery } = quizResultApiSlice;

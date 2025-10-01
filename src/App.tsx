@@ -12,7 +12,6 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
-
 import {LaboratoryPage} from "./pages/LaboratoryPage.tsx";
 import {CategoryPage} from "./pages/CategoryPage.tsx";
 import {MyQuizzesPage} from "./pages/MyQuizzesPage.tsx";
@@ -46,11 +45,8 @@ function App() {
         auth();
     }, [isAuth, refreshToken, dispatch])
 
-
     return (
         <>
-
-
             <Routes>
                 <Route path="/" element={<Layout/>}>
                     {/* public routes */}

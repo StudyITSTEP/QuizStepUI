@@ -7,5 +7,4 @@ export type MyQuizDto = {
     categoryId: number;
     creatorId: number;
     quizAccess: QuizAccess;
-
 }

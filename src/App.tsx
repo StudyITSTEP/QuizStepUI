@@ -12,14 +12,13 @@ import {selectIsAuth, setUser} from "./features/userSlice.ts";
 import Cookies from "js-cookie";
 import type {LoginResultDto} from "./dto/loginResultDto.ts";
 import type {ApiResult} from "./types/ApiResult.ts";
-// import QuizResultCard from "./components/QuizResultCard.tsx";
-import QuizRersultList from "./pages/QuizRersultPage.tsx";
-
 
 import {LaboratoryPage} from "./pages/LaboratoryPage.tsx";
 import {CategoryPage} from "./pages/CategoryPage.tsx";
 import {MyQuizzesPage} from "./pages/MyQuizzesPage.tsx";
 import {CreateQuizPage} from "./pages/CreateQuizPage.tsx";
+import {QuizDetailsPage} from "./pages/QuizDetailsPage.tsx";
+import QuizTakePage from "./pages/QuizTakePage.tsx";
 
 
 function App() {
@@ -60,12 +59,14 @@ function App() {
                     {/* protected routes */}
                     <Route element={<RequireAuth/>}>
                         <Route path="/home" element={<HomePage/>}/>
+                        <Route path="/quiz/:quizId" element={<QuizDetailsPage/>}/>
+                        <Route path="/quiz/start/:quizId" element={<QuizTakePage />}/>
                         <Route path="/laboratory" element={<LaboratoryPage/>}>
                             {/* nested route */}
                                 <Route index element={<MyQuizzesPage />}/>
                                 <Route path="categories" element={<CategoryPage/>}/>
                                 <Route path="quizzes/new" element={<CreateQuizPage/>}/>
-                                <Route path="quiz/:id" element={<CategoryPage/>}/>
+                                <Route path="quiz/edit/:id" element={<CategoryPage/>}/>
                         </Route>
                     </Route>
                 </Route>

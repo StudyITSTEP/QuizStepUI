@@ -1,7 +1,7 @@
 import type {QuizDto} from "../dto/QuizDto.tsx";
 import {Button, Card, Tag} from "antd";
-import {QuizAccess} from "../dto/QuizAccess.tsx";
 import { Link } from "react-router";
+import {QuizAccess} from "../dto/QuizAccess.ts";
 
 export function MyQuizCard(quiz: QuizDto) {
 

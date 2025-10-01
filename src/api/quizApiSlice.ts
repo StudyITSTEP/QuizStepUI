@@ -3,6 +3,8 @@ import {baseQueryWithReauth} from "./baseQuery.ts";
 import type {RootState} from "../app/store.ts";
 import type {QuizDto} from "../dto/QuizDto.tsx";
 import type {FullQuizDto} from "../dto/FullQuizDto.ts";
+import type {Result} from "../types/ApiResult.ts";
+import type {QuizDetailsDto} from "../dto/QuizDetailsDto.ts";
 
 
 export const quizApi = createApi({
@@ -23,10 +25,38 @@ export const quizApi = createApi({
             query: (dto: FullQuizDto) => ({
                 url: "quiz",
                 method: "POST",
-                body: {quiz: dto}
+                body: {quiz: dto},
+
+            })
+        }),
+        getAllQuizzes: builder.query<QuizDto[], void>({
+            query: () => ({
+                url: "quiz",
+                method: "GET",
+            })
+        }),
+        getQuizById: builder.mutation({
+            query: ({id, accessCode}: {
+                id?: number | undefined, accessCode?: string | null
+            }) => ({
+                url: `quiz/getById`,
+                method: "POST",
+                body: { accessCode, id }, // 👈 JSON object
+            })
+        }),
+        getQuizDetails: builder.query<Result<QuizDetailsDto>, number>({
+            query: (id: number) => ({
+                url: `quiz/details/${id}`,
+                method: "GET",
             })
         })
     })
 })
 
-export const {useGetMyQuizzesQuery, useCreateQuizMutation} = quizApi;
+export const {
+    useGetMyQuizzesQuery,
+    useGetAllQuizzesQuery,
+    useGetQuizByIdMutation,
+    useCreateQuizMutation,
+    useGetQuizDetailsQuery
+} = quizApi;

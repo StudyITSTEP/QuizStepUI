@@ -8,7 +8,7 @@ import {setUser} from "../features/userSlice.ts";
 import {IoMailOutline} from "react-icons/io5";
 import {IoLockClosedOutline} from "react-icons/io5";
 import {useState} from "react";
-import {useSearchParams} from "react-router";
+import {useLocation, useNavigate, useSearchParams} from "react-router";
 
 //TODO:
 /*
@@ -21,6 +21,9 @@ export function LoginForm() {
     const [error, setError] = useState<string | undefined>()
     const dispatch = useAppDispatch();
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname ?? "/home";
     const onSubmit = async (data: LoginDto) => {
         const result: ApiResult<LoginResultDto> = await login(data);
 
@@ -33,7 +36,7 @@ export function LoginForm() {
         }
         if(result.data?.succeeded){
             const returnUrl = searchParams.get("returnUrl") ?? "/home";
-            console.log(returnUrl);
+            navigate(returnUrl, { replace: true });
         }
     };
 

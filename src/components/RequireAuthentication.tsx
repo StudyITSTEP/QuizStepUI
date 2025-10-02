@@ -9,7 +9,7 @@ import type {ApiResult} from "../types/ApiResult.ts";
 import type {LoginResultDto} from "../dto/loginResultDto.ts";
 import {Spin} from "antd";
 
-export function RequireAuth() {
+export function RequireAuthentication() {
     const location = useLocation();
 
     const dispatch = useDispatch();

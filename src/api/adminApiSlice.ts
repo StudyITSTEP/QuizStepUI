@@ -1,18 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { UserWithRolesDto } from "../dto/UserWithRolesDto.ts";
+import {baseQueryWithReauth} from "./baseQuery.ts";
 
 export const adminApi = createApi({
     reducerPath: "adminApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api/admin/" }),
+    baseQuery: baseQueryWithReauth,
     tagTypes: ["Users"],
     endpoints: (builder) => ({
         getUsers: builder.query<UserWithRolesDto[], void>({
-            query: () => "users",
-            providesTags: ["Users"],
+            query: () => ({
+                url: "admin/users",
+                method: "GET"
+            }),
         }),
-        setUserRole: builder.mutation<void, { userId: string; role: string }>({
+        setUserRole: builder.mutation<void, { userId: string; roles: string[] }>({
             query: (body) => ({
-                url: "set-role",
+                url: "admin/set-roles",
                 method: "POST",
                 body,
             }),
@@ -20,7 +23,7 @@ export const adminApi = createApi({
         }),
         deleteUser: builder.mutation<void, string>({
             query: (userId) => ({
-                url: `delete/${userId}`,
+                url: `admin/delete/${userId}`,
                 method: "DELETE",
             }),
             invalidatesTags: ["Users"],

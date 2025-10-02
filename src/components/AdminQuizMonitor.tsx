@@ -1,40 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { List } from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Card, List} from "antd";
 import * as signalR from "@microsoft/signalr";
-import ParticipantCard from "./ParticipantCard";
-import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto";
+import {useAppSelector} from "../app/hooks.ts";
+import {selectUser} from "../features/userSlice.ts";
+import {Link} from "react-router";
 
 interface AdminQuizMonitorProps {
     quizId: number;
     adminId: string;
 }
 
-const AdminQuizMonitor: React.FC<AdminQuizMonitorProps> = ({ quizId, adminId }) => {
-    const [participants, setParticipants] = useState<QuizParticipantProgressDto[]>([]);
+const AdminQuizMonitor: React.FC<AdminQuizMonitorProps> = ({quizId, adminId}) => {
+    const [activeQuizzes, setActiveQuizzes] = useState<{ quizId: number, quizName: string }[]>([]);
+    const user = useAppSelector(selectUser)
+    const apiUrl = "http://localhost:5207/api/";
 
     useEffect(() => {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:5001/quizHub")
+            .withUrl(apiUrl + `creatorHub?userId=${user.sub}`, {
+                withCredentials: false
+            })
             .withAutomaticReconnect()
             .build();
 
+        connection.on("ActiveUsersList", (data) => {
+            const activeUserList = data as { quizId: number, quizName: string }[]
+            setActiveQuizzes(prev => prev.concat(activeUserList));
+        })
+
         connection.start().then(async () => {
             console.log("Connected to QuizHub");
-            await connection.invoke("JoinAsAdmin", quizId, adminId);
+
         });
 
-        connection.on("ReceiveParticipantProgress", (progress: QuizParticipantProgressDto) => {
-            setParticipants(prev => {
-                const exists = prev.find(p => p.userId === progress.userId);
-                if (exists) {
-                    return prev.map(p => p.userId === progress.userId ? progress : p);
-                }
-                return [...prev, progress];
-            });
-        });
 
         return () => {
-            connection.stop();
+            connection.stop().then(() => console.log("Connection Stop"));
         };
     }, [quizId, adminId]);
 
@@ -43,10 +44,16 @@ const AdminQuizMonitor: React.FC<AdminQuizMonitorProps> = ({ quizId, adminId }) 
             <h2>Мониторинг прохождения теста</h2>
             <List
                 grid={{ gutter: 16, column: 3 }}
-                dataSource={participants}
+                dataSource={activeQuizzes}
                 renderItem={(participant) => (
-                    <List.Item key={participant.userId}>
-                        <ParticipantCard participant={participant} />
+                    <List.Item key={1}>
+                        <Card>
+                            <div>{participant.quizId}</div>
+                            <div>{participant.quizName}</div>
+                            <Button>
+                                <Link to={`${participant.quizId}`}>Monitor</Link>
+                            </Button>
+                        </Card>
                     </List.Item>
                 )}
             />

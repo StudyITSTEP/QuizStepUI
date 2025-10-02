@@ -1,14 +1,10 @@
-import React from "react";
 import { Card, Progress, Typography } from "antd";
-import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto";
+import type {ActiveUserDto} from "../dto/ActiveUserDto.ts";
 
 const { Text } = Typography;
 
-interface ParticipantCardProps {
-    participant: QuizParticipantProgressDto;
-}
 
-const ParticipantCard: React.FC<ParticipantCardProps> = ({ participant }) => {
+const ParticipantCard = ({ ...participant }: ActiveUserDto) => {
     const percent = Math.round(
         (participant.currentQuestion / participant.totalQuestions) * 100
     );
@@ -17,7 +13,7 @@ const ParticipantCard: React.FC<ParticipantCardProps> = ({ participant }) => {
         <Card
             hoverable
             style={{ width: 500 }}
-            title={participant.userName}
+            title={participant.fullName}
         >
             <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <Text strong>Текущий вопрос:</Text>

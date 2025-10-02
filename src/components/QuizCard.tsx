@@ -1,11 +1,11 @@
 import React from "react";
 import { Card, Button, Tag } from "antd";
-import type {QuizDto} from "../dto/QuizDto.ts";
 import { QuizAccess } from "../dto/QuizAccess.ts";
 import {Link} from "react-router";
+import type {QuizDetailsDto} from "../dto/QuizDetailsDto.ts";
 
 interface QuizCardProps {
-    quiz: QuizDto;
+    quiz: QuizDetailsDto;
     onStart: (quizId: number) => void;
 }
 
@@ -14,7 +14,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart }) => {
         <Card
             title={quiz.name}
             extra={
-                quiz.quizAccess === QuizAccess.Public ? (
+                quiz.access === QuizAccess.Public ? (
                     <Tag color="green">Public</Tag>
                 ) : (
                     <Tag color="red">Private</Tag>
@@ -25,7 +25,6 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStart }) => {
             <Button
                 type="primary"
                 onClick={() => onStart(quiz.id)}
-                disabled={quiz.quizAccess === QuizAccess.Private}
             >
                 <Link to={`/quiz/${quiz.id}`}>
                     Details

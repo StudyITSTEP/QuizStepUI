@@ -4,15 +4,8 @@ import { useAppSelector } from "../app/hooks.ts";
 import { selectUser } from "../features/userSlice.ts";
 import QuizResultCard from "./QuizResultCard.tsx";
 
-// import type { QuizResultDto } from "../dto/QuizResultDto.ts";
 
-// const mockResults: QuizResultDto[] = [
-//     { userId: "1", userEmail: "email1", testId: 101, score: 85 },
-//     { userId: "1", userEmail: "email1", testId: 102, score: 92 },
-//     { userId: "1", userEmail: "email1", testId: 103, score: 74 },
-// ];
-
-const UserResultslist = () => {
+const UserResultsList = () => {
     const user = useAppSelector(selectUser);
     const { data: results, isLoading, error } = useGetUserResultsQuery(user.sub);
     if (error) {
@@ -21,7 +14,7 @@ const UserResultslist = () => {
 
     return (
         <div style={{ padding: 20 }}>
-            <h2>Мои результаты</h2>
+            <h2>My results</h2>
             <List
                 grid={{ gutter: 16, column: 3 }}
                 dataSource={results ?? []}
@@ -36,4 +29,4 @@ const UserResultslist = () => {
     );
 };
 
-export default UserResultslist;
+export default UserResultsList;

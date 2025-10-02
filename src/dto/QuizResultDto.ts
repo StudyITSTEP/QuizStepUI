@@ -1,6 +1,6 @@
 export interface QuizResultDto {
     userId: string;
     userEmail: string;
-    testId: number;
+    quizId: number;
     score: number;
 }

@@ -11,46 +11,48 @@ export const quizApi = createApi({
     reducerPath: 'quizApi',
     baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
-        getMyQuizzes: builder.query<QuizDto[], void>({
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            async queryFn(_, api, opts) {
-                const state = api.getState() as RootState;
-                const sub = state.user.sub;
-                const result = await baseQueryWithReauth(`quiz/my/${sub}`, api, opts);
-                return {data: result.data}
-            }
+        getMyQuizzes: builder.query<QuizDetailsDto[], string>({
+            query: (userId: string) => ({
+                url: `quiz/my/${userId}`,
+                method: "GET"
+            }),
         }),
-        createQuiz: builder.mutation({
-            query: (dto: FullQuizDto) => ({
-                url: "quiz",
-                method: "POST",
-                body: {quiz: dto},
+    createQuiz: builder.mutation({
+        query: (dto: FullQuizDto) => ({
+            url: "quiz",
+            method: "POST",
+            body: {quiz: dto},
 
-            })
-        }),
-        getAllQuizzes: builder.query<QuizDto[], void>({
-            query: () => ({
-                url: "quiz",
-                method: "GET",
-            })
-        }),
-        getQuizById: builder.mutation({
-            query: ({id, accessCode}: {
-                id?: number | undefined, accessCode?: string | null
-            }) => ({
-                url: `quiz/getById`,
-                method: "POST",
-                body: { accessCode, id }, // 👈 JSON object
-            })
-        }),
-        getQuizDetails: builder.query<Result<QuizDetailsDto>, number>({
-            query: (id: number) => ({
-                url: `quiz/details/${id}`,
-                method: "GET",
-            })
+        })
+    }),
+    getAllQuizzes: builder.query<QuizDetailsDto[], void>({
+        query: () => ({
+            url: "quiz",
+            method: "GET",
+        })
+    }),
+    getQuizById: builder.mutation({
+        query: ({id, accessCode}: {
+            id?: number | undefined, accessCode?: string | null
+        }) => ({
+            url: `quiz/getById`,
+            method: "POST",
+            body: {accessCode, id}, // 👈 JSON object
+        })
+    }),
+    getQuizDetails: builder.query<Result<QuizDetailsDto>, number>({
+        query: (id: number) => ({
+            url: `quiz/details/${id}`,
+            method: "GET",
+        })
+    }),
+    deleteQuiz: builder.mutation({
+        query: (id: number) => ({
+            url: `quiz/${id}`,
+            method: "DELETE"
         })
     })
+})
 })
 
 export const {
@@ -58,5 +60,6 @@ export const {
     useGetAllQuizzesQuery,
     useGetQuizByIdMutation,
     useCreateQuizMutation,
-    useGetQuizDetailsQuery
+    useGetQuizDetailsQuery,
+    useDeleteQuizMutation,
 } = quizApi;

@@ -22,7 +22,6 @@ export const quizApi = createApi({
             url: "quiz",
             method: "POST",
             body: {quiz: dto},
-
         })
     }),
     getAllQuizzes: builder.query<QuizDetailsDto[], void>({

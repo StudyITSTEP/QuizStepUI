@@ -1,31 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { List } from "antd";
-import ParticipantCard from "./ParticipantCard.tsx";
-import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto.ts";
+import * as signalR from "@microsoft/signalr";
+import ParticipantCard from "./ParticipantCard";
+import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto";
 
-const mockParticipants: QuizParticipantProgressDto[] = [
-    { userId: "1", userName: "1", currentQuestion: 3, totalQuestions: 10 },
-    { userId: "2", userName: "2", currentQuestion: 7, totalQuestions: 10 },
-    { userId: "3", userName: "3", currentQuestion: 10, totalQuestions: 10 },
-];
+interface AdminQuizMonitorProps {
+    quizId: number;
+    adminId: string;
+}
 
-const AdminQuizMonitor: React.FC = () => {
+const AdminQuizMonitor: React.FC<AdminQuizMonitorProps> = ({ quizId, adminId }) => {
+    const [participants, setParticipants] = useState<QuizParticipantProgressDto[]>([]);
 
-    // const { data: participants, isLoading, error } = useGetQuizParticipantsQuery();
+    useEffect(() => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:5001/quizHub")
+            .withAutomaticReconnect()
+            .build();
 
-    // if (error) {
-    //     return <p style={{ color: "red" }}>Ошибка при загрузке участников</p>;
-    // }
+        connection.start().then(async () => {
+            console.log("Connected to QuizHub");
+            await connection.invoke("JoinAsAdmin", quizId, adminId);
+        });
+
+        connection.on("ReceiveParticipantProgress", (progress: QuizParticipantProgressDto) => {
+            setParticipants(prev => {
+                const exists = prev.find(p => p.userId === progress.userId);
+                if (exists) {
+                    return prev.map(p => p.userId === progress.userId ? progress : p);
+                }
+                return [...prev, progress];
+            });
+        });
+
+        return () => {
+            connection.stop();
+        };
+    }, [quizId, adminId]);
 
     return (
         <div>
             <h2>Мониторинг прохождения теста</h2>
             <List
                 grid={{ gutter: 16, column: 3 }}
-                dataSource={mockParticipants ?? []}
-                // loading={isLoading}
-                renderItem={(participant: QuizParticipantProgressDto) => (
-                    <List.Item>
+                dataSource={participants}
+                renderItem={(participant) => (
+                    <List.Item key={participant.userId}>
                         <ParticipantCard participant={participant} />
                     </List.Item>
                 )}

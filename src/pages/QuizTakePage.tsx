@@ -1,4 +1,4 @@
-import {useLayoutEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
 import {
     Card,
     Radio,
@@ -26,6 +26,8 @@ import {useAppSelector} from "../app/hooks.ts";
 import {selectUser} from "../features/userSlice.ts";
 import type {FetchBaseQueryError} from "@reduxjs/toolkit/query";
 import type {QuizResultDto} from "../dto/QuizResultDto.ts";
+import * as signalR from "@microsoft/signalr";
+import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto.ts";
 
 const {Title, Paragraph, Text} = Typography;
 
@@ -48,6 +50,7 @@ const QuizTakePage = () => {
     const user = useAppSelector(selectUser);
     const {refetch: refetchQuizResults} = useGetUserResultsQuery(user.sub);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
 
 
     // Load quiz after entering access code
@@ -73,18 +76,34 @@ const QuizTakePage = () => {
     const handleNext = async () => {
         if (!quiz || currentAnswer == null) return;
 
-        setAnswerStore((prev) => [...prev, {questionId: quiz.questions[current].id!, answerId: currentAnswer}]);
+        setAnswerStore((prev) => [
+            ...prev,
+            { questionId: quiz.questions[current].id!, answerId: currentAnswer }
+        ]);
         setCurrentAnswer(null);
+
+        if (connection) {
+            const progress: QuizParticipantProgressDto = {
+                userId: user.sub,
+                userName: user.email || "Unknown",
+                currentQuestion: current + 1,
+                totalQuestions: quiz.questions.length
+            };
+            connection.invoke("SendProgress", quiz.id!, progress);
+        }
 
         if (current < quiz.questions.length - 1) {
             setCurrent(current + 1);
         } else {
-            // TODO: submit answers to API
             const dto: SetQuizResultDto = {
                 quizId: quiz.id!,
                 userId: user.sub,
-                answerQuestions: [...answerStore, {questionId: quiz.questions[current].id!, answerId: currentAnswer}]
-            }
+                answerQuestions: [
+                    ...answerStore,
+                    { questionId: quiz.questions[current].id!, answerId: currentAnswer }
+                ]
+            };
+
             const result = await submitResult(dto);
             refetchQuizResults();
             if (result?.data?.succeeded) {
@@ -92,7 +111,6 @@ const QuizTakePage = () => {
             }
         }
     };
-
 
     useLayoutEffect(() => {
         const func = async () => {
@@ -115,6 +133,28 @@ const QuizTakePage = () => {
         }
         func();
     }, [quizDetails, user, quizResult]);
+
+    useEffect(() => {
+        if (!quizId || !user) return;
+
+        const conn = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:5001/quizHub")
+            .withAutomaticReconnect()
+            .build();
+
+        conn.start().then(() => {
+            console.log("Connected to SignalR");
+            conn.onreconnected(() => {
+                conn.invoke("JoinAsParticipant", Number(quizId), user.sub);
+            });
+        });
+
+        setConnection(conn);
+
+        return () => {
+            conn.stop();
+        };
+    }, [quizId, user]);
 
     return (
         <>

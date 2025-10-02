@@ -29,4 +29,8 @@ export const quizResultApiSlice = createApi({
     }),
 });
 
-export const {useGetUserResultsQuery, useSubmitResultMutation, useGetResultByQuizMutation} = quizResultApiSlice;
+export const {
+    useGetUserResultsQuery,
+    useSubmitResultMutation,
+    useGetResultByQuizMutation
+} = quizResultApiSlice;

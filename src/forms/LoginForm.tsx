@@ -2,13 +2,13 @@ import {useLoginMutation} from "../api/accountApiSlice.ts";
 import {useAppDispatch} from "../app/hooks.ts";
 import type {LoginDto} from "../dto/loginDto.ts";
 import {Alert, Button, Checkbox, Form, Input} from "antd";
-import type {ApiResult} from "../types/ApiResult.ts";
+import type {ApiResult, Result} from "../types/ApiResult.ts";
 import type {LoginResultDto} from "../dto/loginResultDto.ts";
 import {setUser} from "../features/userSlice.ts";
 import {IoMailOutline} from "react-icons/io5";
 import {IoLockClosedOutline} from "react-icons/io5";
 import {useState} from "react";
-import {useNavigate} from "react-router";
+import {useSearchParams} from "react-router";
 
 //TODO:
 /*
@@ -18,25 +18,22 @@ import {useNavigate} from "react-router";
 
 export function LoginForm() {
     const [login, {isLoading}] = useLoginMutation();
-    const [error, setError] = useState()
-    const navigate = useNavigate();
+    const [error, setError] = useState<string | undefined>()
     const dispatch = useAppDispatch();
-
-
+    const [searchParams] = useSearchParams();
     const onSubmit = async (data: LoginDto) => {
         const result: ApiResult<LoginResultDto> = await login(data);
-        console.log(result)
 
         if (result.data && result.data.value) {
             dispatch(setUser(result.data.value))
         }
-
-        if (result.error) {
-            setError(error)
+        if (result?.error) {
+            const err = result.error as { data: Result<unknown> };
+            setError(err.data.error?.description)
         }
         if(result.data?.succeeded){
-            console.log("success")
-            navigate("/home")
+            const returnUrl = searchParams.get("returnUrl") ?? "/home";
+            console.log(returnUrl);
         }
     };
 

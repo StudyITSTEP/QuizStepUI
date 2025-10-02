@@ -22,6 +22,12 @@ export function LaboratoryPage() {
             key: "categories",
             label: <Link to={"categories"}>Categories</Link>,
             roles: ["Moderator", "Admin"]
+        }, {
+            key: "results",
+            label: <Link to={"results"}>Results</Link>,
+        },{
+            key: "monitoring",
+            label: <Link to={"monitoring"}>Monitoring</Link>,
         }
     ]
 

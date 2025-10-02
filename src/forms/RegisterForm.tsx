@@ -2,6 +2,7 @@ import {useRegisterMutation} from "../api/accountApiSlice.ts";
 import {Button, Form, Input} from "antd";
 import type {RegisterDto} from "../dto/registerDto.ts";
 import type {ApiResult} from "../types/ApiResult.ts";
+import {useNavigate} from "react-router";
 
 //TODO:
 /*
@@ -11,11 +12,11 @@ import type {ApiResult} from "../types/ApiResult.ts";
 
 export function RegisterForm() {
     const [register, {isLoading}] = useRegisterMutation();
+    const navigate = useNavigate();
     const onSubmit = async (data: RegisterDto) => {
         const result: ApiResult<unknown> = await register(data)
-        console.log(result)
-        if (result.data?.succeeded){
-
+        if (result?.data?.succeeded){
+            navigate("/login")
         }
     }
     return (

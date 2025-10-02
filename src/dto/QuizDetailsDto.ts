@@ -8,5 +8,6 @@ export type QuizDetailsDto = {
     creatorId: string
     totalParticipants: number
     access: number
+    accessCode?: number | null
     averageScore: number
 }

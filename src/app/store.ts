@@ -3,6 +3,7 @@ import {userSlice} from "../features/userSlice.ts";
 import {accountApi} from "../api/accountApiSlice.ts";
 import {categoryApi} from "../api/categoryApiSlice.ts";
 import {quizApi} from "../api/quizApiSlice.ts";
+import {quizResultApiSlice} from "../api/quizResultApiSlice.ts";
 
 
 export const store = configureStore({
@@ -13,11 +14,13 @@ export const store = configureStore({
         [categoryApi.reducerPath]: categoryApi.reducer,
 
         [quizApi.reducerPath]: quizApi.reducer,
+
+        [quizResultApiSlice.reducerPath]: quizResultApiSlice.reducer,
     },
     middleware:
         (getDefaultMiddleware) => getDefaultMiddleware()
 
-            .concat(accountApi.middleware, categoryApi.middleware, quizApi.middleware),
+            .concat(accountApi.middleware, categoryApi.middleware, quizApi.middleware, quizResultApiSlice.middleware),
 
 });
 

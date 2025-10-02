@@ -33,7 +33,6 @@ export const baseQueryWithReauth = async (args: (string | FetchArgs), api: BaseQ
         }else{
             refreshToken = user.refreshToken;
         }
-        console.log(refreshToken);
         const refreshResult = await baseQuery({
             url: "account/refresh-token",
             method: "POST",

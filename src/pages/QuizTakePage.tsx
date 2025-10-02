@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useLayoutEffect, useState} from "react";
 import {
     Card,
     Radio,
@@ -10,12 +10,22 @@ import {
     Modal,
     Statistic,
     Space,
-    Spin, Result,
+    Spin, Result, Alert,
 } from "antd";
 import {Link, useParams} from "react-router";
 import type {FullQuizDto} from "../dto/FullQuizDto.ts";
-import type {ApiResult} from "../types/ApiResult.ts";
+import type {Result as MyResult, ApiResult} from "../types/ApiResult.ts";
 import {useGetQuizByIdMutation, useGetQuizDetailsQuery} from "../api/quizApiSlice.ts";
+import type {SetQuizResultDto} from "../dto/SetQuizResultDto.ts";
+import {
+    useGetResultByQuizMutation,
+    useGetUserResultsQuery,
+    useSubmitResultMutation
+} from "../api/quizResultApiSlice.ts";
+import {useAppSelector} from "../app/hooks.ts";
+import {selectUser} from "../features/userSlice.ts";
+import type {FetchBaseQueryError} from "@reduxjs/toolkit/query";
+import type {QuizResultDto} from "../dto/QuizResultDto.ts";
 
 const {Title, Paragraph, Text} = Typography;
 
@@ -23,7 +33,6 @@ type AnswerRecord = { questionId: number; answerId: number };
 
 const QuizTakePage = () => {
     const {quizId} = useParams();
-
     const [current, setCurrent] = useState(0);
     const [currentAnswer, setCurrentAnswer] = useState<number | null>(null);
     const [answerStore, setAnswerStore] = useState<AnswerRecord[]>([]);
@@ -33,15 +42,25 @@ const QuizTakePage = () => {
     const [completed, setCompleted] = useState<boolean>(false);
     const [getQuiz, {isLoading}] = useGetQuizByIdMutation();
     const {data: quizDetails, isLoading: detailsLoading} = useGetQuizDetailsQuery(+quizId!);
+    const [submitResult, {isLoading: submitResultLoading}] = useSubmitResultMutation();
+    const [quizResult] = useGetResultByQuizMutation();
+    const [retake, setRetake] = useState<number>(-1);
+    const user = useAppSelector(selectUser);
+    const {refetch: refetchQuizResults} = useGetUserResultsQuery(user.sub);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
 
     // Load quiz after entering access code
     const fetchQuiz = async () => {
         if (!quizId) return;
+        const result: ApiResult<FullQuizDto> = await getQuiz({id: +quizId, accessCode: code});
+        console.log(result);
 
-        const result: ApiResult<FullQuizDto> = await getQuiz({id: +quizId, code});
         if (result?.data?.succeeded) {
             setQuiz(result.data.value!);
             setShowAccessCode(false);
+        } else {
+            setErrors({...errors, ["access"]: "Code is Not Correct!"});
         }
     };
 
@@ -51,7 +70,7 @@ const QuizTakePage = () => {
     };
 
     // Move to next question or finish
-    const handleNext = () => {
+    const handleNext = async () => {
         if (!quiz || currentAnswer == null) return;
 
         setAnswerStore((prev) => [...prev, {questionId: quiz.questions[current].id!, answerId: currentAnswer}]);
@@ -60,14 +79,42 @@ const QuizTakePage = () => {
         if (current < quiz.questions.length - 1) {
             setCurrent(current + 1);
         } else {
-            console.log("Quiz finished! All answers:", [
-                ...answerStore,
-                {questionId: quiz.questions[current].id!, answerId: currentAnswer},
-            ]);
             // TODO: submit answers to API
-            setCompleted(true);
+            const dto: SetQuizResultDto = {
+                quizId: quiz.id!,
+                userId: user.sub,
+                answerQuestions: [...answerStore, {questionId: quiz.questions[current].id!, answerId: currentAnswer}]
+            }
+            const result = await submitResult(dto);
+            refetchQuizResults();
+            if (result?.data?.succeeded) {
+                setCompleted(true);
+            }
         }
     };
+
+
+    useLayoutEffect(() => {
+        const func = async () => {
+            if (quizDetails?.value && user) {
+                try {
+                    const result: MyResult<QuizResultDto> = await quizResult({
+                        quizId: quizDetails.value.id!,
+                        userId: user.sub
+                    }).unwrap();
+                    if (result?.succeeded && result.value) {
+                        setRetake(result.value.score!)
+                    }
+                } catch (err) {
+                    const error = err as FetchBaseQueryError;
+                    if (error.status === 404) {
+                        setRetake(-1)
+                    }
+                }
+            }
+        }
+        func();
+    }, [quizDetails, user, quizResult]);
 
     return (
         <>
@@ -75,7 +122,7 @@ const QuizTakePage = () => {
             <Modal open={completed} footer={null} closable={false}>
                 <Result status={"success"} title={"Successfully Completed Test"}
                         extra={[
-                            <Button type={"primary"}>
+                            <Button type={"primary"} loading={submitResultLoading}>
                                 <Link to={"/laboratory/results"}>
                                     Check Results
                                 </Link>
@@ -97,6 +144,12 @@ const QuizTakePage = () => {
                                 title="Total Questions"
                                 value={quizDetails?.value?.totalQuestions || "No Questions"}
                             />
+                            {retake >= 0 &&
+                                <Statistic
+                                    title="Previous Result"
+                                    value={retake}
+                                    suffix={" / 100"}
+                                />}
 
                             {quizDetails?.value?.access === 1 ? (
                                 <>
@@ -106,18 +159,22 @@ const QuizTakePage = () => {
                                     <Text type="secondary" style={{marginBottom: 12}}>
                                         Please enter the 6-digit access code to continue.
                                     </Text>
+                                    {errors["access"] &&
+                                        <Alert message={errors["access"]} type={"error"}/>}
                                     <Input.OTP
-                                        length={6}
-                                        onChange={setCode}
+                                        length={5}
+                                        onChange={(e) => setCode(e)}
                                         style={{marginBottom: 16}}
                                     />
-                                    <Button type="primary" block size="large" onClick={fetchQuiz}>
-                                        Submit
+
+                                    <Button type="primary" block size="large" onClick={fetchQuiz}
+                                            disabled={!(code.length === 5)}>
+                                        {retake >= 0 ? <>Try again</> : <>Submit</>}
                                     </Button>
                                 </>
                             ) : (
                                 <Button type="primary" block size="large" onClick={fetchQuiz} loading={detailsLoading}>
-                                    Start Quiz
+                                    {retake >= 0 ? <>Try again</> : <>Submit</>}
                                 </Button>
                             )}
                         </>

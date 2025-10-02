@@ -28,9 +28,13 @@ export const userSlice = createSlice({
             state.firstName = decodeToken?.firstName
             state.lastName = decodeToken?.lastName
             state.email = decodeToken?.email
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            state.roles.push(decodeToken?.roles)
+            if (decodeToken?.roles) {
+                if (Array.isArray(decodeToken.roles)) {
+                    state.roles = decodeToken.roles;
+                } else {
+                    state.roles = [decodeToken.roles];
+                }
+            }
             state.token = action.payload.token
             state.refreshToken = action.payload.refreshToken
             Cookies.set("refreshToken", action.payload.refreshToken!, {
@@ -53,4 +57,5 @@ export const {setUser, logout} = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;
 export const selectAccessToken = (state: RootState) => state.user.token;
 export const selectIsAuth = (state: RootState) => state.user.isAuthenticated;
+export const selectRoles = (state: RootState) => state.user.roles;
 export default userSlice.reducer;

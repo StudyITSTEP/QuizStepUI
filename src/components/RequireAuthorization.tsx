@@ -16,7 +16,7 @@ export function RequireAuthorization({allowedRoles}:{allowedRoles: string[]}) {
     }, [roles])
     return (
         <>
-            {loading ? <Spin/> :
+            {loading ? <Spin fullscreen/> :
                 roles.find(role => allowedRoles.includes(role)) ? <Outlet/> : <ForbiddenPage/>
             }
         </>

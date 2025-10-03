@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import type { UserWithRolesDto } from "../dto/UserWithRolesDto.ts";
 import {baseQueryWithReauth} from "./baseQuery.ts";
 

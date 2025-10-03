@@ -27,7 +27,6 @@ import {selectUser} from "../features/userSlice.ts";
 import type {FetchBaseQueryError} from "@reduxjs/toolkit/query";
 import type {QuizResultDto} from "../dto/QuizResultDto.ts";
 import * as signalR from "@microsoft/signalr";
-import type { QuizParticipantProgressDto } from "../dto/QuizParticipantProgressDto.ts";
 
 const {Title, Paragraph, Text} = Typography;
 
@@ -52,6 +51,7 @@ const QuizTakePage = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
 
+    const apiUrl = "http://localhost:5207/api/";
 
     // Load quiz after entering access code
     const fetchQuiz = async () => {
@@ -82,18 +82,13 @@ const QuizTakePage = () => {
         ]);
         setCurrentAnswer(null);
 
-        if (connection) {
-            const progress: QuizParticipantProgressDto = {
-                userId: user.sub,
-                userName: user.email || "Unknown",
-                currentQuestion: current + 1,
-                totalQuestions: quiz.questions.length
-            };
-            connection.invoke("SendProgress", quiz.id!, progress);
-        }
+
 
         if (current < quiz.questions.length - 1) {
             setCurrent(current + 1);
+            if (connection) {
+                await connection.invoke("SetCurrentQuestion", user.sub, quiz.id, current + 2);
+            }
         } else {
             const dto: SetQuizResultDto = {
                 quizId: quiz.id!,
@@ -109,7 +104,9 @@ const QuizTakePage = () => {
             if (result?.data?.succeeded) {
                 setCompleted(true);
             }
+
         }
+
     };
 
     useLayoutEffect(() => {
@@ -136,23 +133,21 @@ const QuizTakePage = () => {
 
     useEffect(() => {
         if (!quizId || !user) return;
-
+        console.log(apiUrl)
         const conn = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:5001/quizHub")
-            .withAutomaticReconnect()
+            .withUrl(apiUrl + `activeUserHub?quizId=${quizId}&userId=${user.sub}`, {
+                withCredentials: false,
+            })
             .build();
 
         conn.start().then(() => {
             console.log("Connected to SignalR");
-            conn.onreconnected(() => {
-                conn.invoke("JoinAsParticipant", Number(quizId), user.sub);
-            });
         });
 
         setConnection(conn);
 
-        return () => {
-            conn.stop();
+        return  () => {
+             conn.stop();
         };
     }, [quizId, user]);
 

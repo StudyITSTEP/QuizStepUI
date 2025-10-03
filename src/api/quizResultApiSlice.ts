@@ -25,6 +25,12 @@ export const quizResultApiSlice = createApi({
                 url: `QuizResult/result?userId=${userId}&quizId=${quizId}`,
                 method: "GET"
             })
+        }),
+        getResultsByQuizId: builder.query<QuizResultDto[], string>({
+            query: (quizId: string) => ({
+                url: `QuizResult/results/quiz/${quizId}`,
+                method: "GET"
+            })
         })
     }),
 });
@@ -32,5 +38,6 @@ export const quizResultApiSlice = createApi({
 export const {
     useGetUserResultsQuery,
     useSubmitResultMutation,
-    useGetResultByQuizMutation
+    useGetResultByQuizMutation,
+    useGetResultsByQuizIdQuery,
 } = quizResultApiSlice;

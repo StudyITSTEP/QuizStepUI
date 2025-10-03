@@ -54,7 +54,7 @@ export function MyQuizCard(quiz: QuizDetailsDto) {
                 <Link to={`/quiz/${quiz.id}`}>
                     <Button type="primary">Details</Button>
                 </Link>
-                <Link to={`/quiz/${quiz.id}/edit`}>
+                <Link to={`quiz/edit/${quiz.id}`}>
                     <Button>Edit</Button>
                 </Link>
                 <Button danger onClick={deleteQuizHandler}>

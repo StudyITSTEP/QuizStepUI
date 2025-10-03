@@ -10,4 +10,5 @@ export type QuizDetailsDto = {
     access: number
     accessCode?: number | null
     averageScore: number
+    categoryId: number
 }

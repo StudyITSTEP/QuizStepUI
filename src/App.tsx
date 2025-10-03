@@ -16,6 +16,7 @@ import AdminPanel from "./components/AdminPanel.tsx";
 import {RequireAuthorization} from "./components/RequireAuthorization.tsx";
 import {MonitorCurrentQuizPage} from "./pages/MonitorCurrentQuizPage.tsx";
 import {QuizResultPage} from "./pages/QuizResultPage.tsx";
+import {UserPage} from "./pages/UserPage.tsx";
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
                     {/* protected routes */}
                     <Route element={<RequireAuthentication/>}>
                         <Route path="/home" element={<HomePage/>}/>
+                        <Route path="/user/:userId" element={<UserPage />}/>
                         <Route element={<RequireAuthorization allowedRoles={["Admin"]}/>}>
                             <Route path="/admin" element={<AdminPanel/>}/>
                         </Route>

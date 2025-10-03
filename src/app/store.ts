@@ -5,6 +5,7 @@ import {categoryApi} from "../api/categoryApiSlice.ts";
 import {quizApi} from "../api/quizApiSlice.ts";
 import {quizResultApiSlice} from "../api/quizResultApiSlice.ts";
 import {adminApi} from "../api/adminApiSlice.ts";
+import {userApi} from "../api/userApiSplice.ts";
 
 
 export const store = configureStore({
@@ -18,11 +19,12 @@ export const store = configureStore({
 
         [quizResultApiSlice.reducerPath]: quizResultApiSlice.reducer,
         [adminApi.reducerPath]: adminApi.reducer,
+        [userApi.reducerPath]: userApi.reducer,
     },
     middleware:
         (getDefaultMiddleware) => getDefaultMiddleware()
 
-            .concat(accountApi.middleware, categoryApi.middleware, quizApi.middleware, quizResultApiSlice.middleware, adminApi.middleware),
+            .concat(accountApi.middleware, categoryApi.middleware, quizApi.middleware, quizResultApiSlice.middleware, adminApi.middleware, userApi.middleware),
 
 });
 

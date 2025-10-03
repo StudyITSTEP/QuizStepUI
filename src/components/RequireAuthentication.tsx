@@ -39,7 +39,7 @@ export function RequireAuthentication() {
     }, [isAuth, refreshToken, dispatch])
 
     return (
-        loading ? <Spin tip={"Loading..."}/> :
+        loading ? <Spin tip={"Loading..."} fullscreen/> :
             isAuth ?
                 <Outlet/> : <Navigate to={`/login?returnUrl=${location.pathname}`} state={{from: location}} replace/>
     )

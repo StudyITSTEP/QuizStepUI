@@ -15,6 +15,7 @@ import AdminQuizMonitor from "./components/AdminQuizMonitor.tsx";
 import AdminPanel from "./components/AdminPanel.tsx";
 import {RequireAuthorization} from "./components/RequireAuthorization.tsx";
 import {MonitorCurrentQuizPage} from "./pages/MonitorCurrentQuizPage.tsx";
+import {QuizResultPage} from "./pages/QuizResultPage.tsx";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                                 <Route path="categories" element={<CategoryPage/>}/>
                             </Route>
                             <Route path="results" element={<QuizResultList/>}/>
+                            <Route path="results/quiz/:quizId" element={<QuizResultPage/>}/>
                             <Route path="monitoring" element={<AdminQuizMonitor />}/>
                                 <Route path="monitoring/:quizId" element={<MonitorCurrentQuizPage/>}/>
 

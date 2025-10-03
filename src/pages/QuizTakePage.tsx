@@ -87,8 +87,7 @@ const QuizTakePage = () => {
         if (current < quiz.questions.length - 1) {
             setCurrent(current + 1);
             if (connection) {
-
-                await connection.invoke("SetCurrentQuestion", user.sub, quiz.id, current + 1);
+                await connection.invoke("SetCurrentQuestion", user.sub, quiz.id, current + 2);
             }
         } else {
             const dto: SetQuizResultDto = {
@@ -147,8 +146,8 @@ const QuizTakePage = () => {
 
         setConnection(conn);
 
-        return async () => {
-            await conn.stop();
+        return  () => {
+             conn.stop();
         };
     }, [quizId, user]);
 

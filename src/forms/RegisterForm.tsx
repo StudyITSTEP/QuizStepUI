@@ -1,7 +1,8 @@
 import {useRegisterMutation} from "../api/accountApiSlice.ts";
-import {Button, Form, Input} from "antd";
+import {Button, Form, Input, Modal} from "antd";
 import type {RegisterDto} from "../dto/registerDto.ts";
 import type {ApiResult} from "../types/ApiResult.ts";
+import {useState} from "react";
 import {useNavigate} from "react-router";
 
 //TODO:
@@ -11,14 +12,41 @@ import {useNavigate} from "react-router";
 * */
 
 export function RegisterForm() {
-    const [register, {isLoading}] = useRegisterMutation();
+    const [register, { isLoading }] = useRegisterMutation();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [userEmail, setUserEmail] = useState("");
     const navigate = useNavigate();
+
     const onSubmit = async (data: RegisterDto) => {
-        const result: ApiResult<unknown> = await register(data)
-        if (result?.data?.succeeded){
-            navigate("/login")
+        const result: ApiResult<unknown> = await register(data);
+
+        if (result?.data?.succeeded) {
+            setUserEmail(data.email);
+            setIsModalVisible(true);
         }
-    }
+    };
+
+    const handleOk = async () => {
+        try {
+            Modal.success({
+                title: "Email confirmation sent!",
+                content: "Please check your email to confirm registration.",
+                onOk: () => navigate("/login"),
+            });
+
+            setIsModalVisible(false);
+        } catch (err) {
+            Modal.error({
+                title: "Error",
+                content: "Failed to send confirmation email.",
+            });
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
     return (
         <>
             <Form name={"register"}
@@ -90,6 +118,16 @@ export function RegisterForm() {
                     </Button>
                 </Form.Item>
             </Form>
+
+            <Modal
+                title="Thank you for registering!"
+                open={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Ok"
+            >
+                <p>Your registration was successful. Click "Ok" to receive a confirmation email.</p>
+            </Modal>
         </>
     )
 }

@@ -1,7 +1,7 @@
 import './App.css'
 import {LoginPage} from "./pages/LoginPage.tsx";
 import {HomePage} from "./pages/HomePage.tsx";
-import {Route, Routes} from "react-router";
+import {Navigate, Route, Routes} from "react-router";
 import {Layout} from "./components/Layout.tsx";
 import {RequireAuthentication} from './components/RequireAuthentication.tsx';
 import {LaboratoryPage} from "./pages/LaboratoryPage.tsx";
@@ -17,7 +17,6 @@ import {RequireAuthorization} from "./components/RequireAuthorization.tsx";
 import {MonitorCurrentQuizPage} from "./pages/MonitorCurrentQuizPage.tsx";
 import {QuizResultPage} from "./pages/QuizResultPage.tsx";
 
-
 function App() {
 
 
@@ -27,6 +26,8 @@ function App() {
                 <Route path="/" element={<Layout/>}>
                     {/* public routes */}
                     <Route path="login" element={<LoginPage/>}/>
+
+                    <Route index element={<Navigate to="/home" replace />} />
 
                     {/* protected routes */}
                     <Route element={<RequireAuthentication/>}>
@@ -46,7 +47,6 @@ function App() {
                             <Route path="results/quiz/:quizId" element={<QuizResultPage/>}/>
                             <Route path="monitoring" element={<AdminQuizMonitor />}/>
                                 <Route path="monitoring/:quizId" element={<MonitorCurrentQuizPage/>}/>
-
                             <Route path="quizzes/new" element={<CreateQuizPage/>}/>
                             <Route path="quiz/edit/:id" element={<CategoryPage/>}/>
                         </Route>

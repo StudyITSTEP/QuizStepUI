@@ -1,7 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {baseQueryWithReauth} from "./baseQuery.ts";
-import type {RootState} from "../app/store.ts";
-import type {QuizDto} from "../dto/QuizDto.tsx";
 import type {FullQuizDto} from "../dto/FullQuizDto.ts";
 import type {Result} from "../types/ApiResult.ts";
 import type {QuizDetailsDto} from "../dto/QuizDetailsDto.ts";
@@ -50,8 +48,15 @@ export const quizApi = createApi({
             url: `quiz/${id}`,
             method: "DELETE"
         })
+    }),
+    updateQuiz: builder.mutation({
+        query: (dto: FullQuizDto) => ({
+            url: `quiz/${dto.id}`,
+            method: "PUT",
+            body: { quiz: dto },
+        }),
+    }),
     })
-})
 })
 
 export const {
@@ -61,4 +66,5 @@ export const {
     useCreateQuizMutation,
     useGetQuizDetailsQuery,
     useDeleteQuizMutation,
+    useUpdateQuizMutation,
 } = quizApi;

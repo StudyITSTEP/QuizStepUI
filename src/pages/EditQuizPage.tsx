@@ -1,12 +1,17 @@
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button, Form, Input, Select, Typography, Spin, Card, Radio, Space } from "antd";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCategoriesQuery } from "../api/categoryApiSlice.ts";
-import { useGetQuizDetailsQuery, useUpdateQuizMutation } from "../api/quizApiSlice.ts";
+import {
+    useGetMyQuizzesQuery,
+    useGetQuizByIdMutation,
+    useUpdateQuizMutation
+} from "../api/quizApiSlice.ts";
 import type { FullQuizDto } from "../dto/FullQuizDto.ts";
 import type { ApiResult } from "../types/ApiResult.ts";
-import type { QuizDto } from "../dto/QuizDto.tsx";
+import {selectUser} from "../features/userSlice.ts";
+import {useAppSelector} from "../app/hooks.ts";
 
 const { Title } = Typography;
 
@@ -14,15 +19,23 @@ export function EditQuizPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [form] = Form.useForm();
+    const user = useAppSelector(selectUser);
     const { data: categories } = useCategoriesQuery();
-    const { data: quizDetails, isLoading } = useGetQuizDetailsQuery(Number(id));
+    const [getQuiz, {isLoading}] = useGetQuizByIdMutation();
     const [updateQuiz, { isLoading: saving }] = useUpdateQuizMutation();
+    const [quiz, setQuiz] = useState<FullQuizDto>();
+    const {refetch} = useGetMyQuizzesQuery(user.sub)
 
     useEffect(() => {
-        if (quizDetails?.succeeded && quizDetails.value) {
-            form.setFieldsValue(quizDetails.value);
+        const func = async () => {
+            const result: ApiResult<FullQuizDto> = await getQuiz({id: +id!, accessCode: null});
+            if (result?.data?.succeeded && result.data.value) {
+                form.setFieldsValue(result.data.value);
+                setQuiz(result.data.value);
+            }
         }
-    }, [quizDetails, form]);
+        func()
+    }, [form, getQuiz, id, refetch]);
 
     const categoryOptions = categories?.map((c) => ({
         key: c.id,
@@ -32,8 +45,9 @@ export function EditQuizPage() {
 
     const onSubmit = async (dto: FullQuizDto) => {
         dto.id = Number(id);
-        const result: ApiResult<QuizDto> = await updateQuiz(dto);
+        const result: ApiResult<FullQuizDto> = await updateQuiz(dto);
         if (result.data?.succeeded) {
+            refetch()
             navigate("/laboratory");
         }
     };
@@ -53,7 +67,9 @@ export function EditQuizPage() {
                 <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
                     <Select options={categoryOptions} />
                 </Form.Item>
-
+                <Form.Item hidden name={"creatorId"}>
+                    <Input value={quiz?.creatorId} />
+                </Form.Item>
                 <Form.List
                     name="questions"
                     rules={[
@@ -140,7 +156,7 @@ export function EditQuizPage() {
                                                                         style={{ width: 300 }}
                                                                     />
                                                                 </Form.Item>
-                                                                <Radio value={idx}>Correct</Radio>
+                                                                <Radio value={idx} checked={false}>Correct</Radio>
                                                                 <Button
                                                                     type="text"
                                                                     danger
@@ -168,6 +184,7 @@ export function EditQuizPage() {
                                     <Form.Item
                                         name={[field.name, "correctAnswerIndex"]}
                                         hidden
+                                        initialValue={quiz?.questions?.[field.name]?.correctAnswerIndex ?? 0}
                                     >
                                         <Input type="hidden" />
                                     </Form.Item>

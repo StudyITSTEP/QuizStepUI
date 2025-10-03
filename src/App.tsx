@@ -16,16 +16,12 @@ import AdminPanel from "./components/AdminPanel.tsx";
 import {RequireAuthorization} from "./components/RequireAuthorization.tsx";
 import {MonitorCurrentQuizPage} from "./pages/MonitorCurrentQuizPage.tsx";
 import {QuizResultPage} from "./pages/QuizResultPage.tsx";
-import {EditQuizPage} from "./pages/EditQuizPage.tsx";
-
 
 function App() {
 
 
     return (
         <>
-            <EditQuizPage/>
-
             <Routes>
                 <Route path="/" element={<Layout/>}>
                     {/* public routes */}
